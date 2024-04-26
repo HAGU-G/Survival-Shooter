@@ -40,7 +40,6 @@ public class MobSpawner : MonoBehaviour
                     {
                         Enemy enemy = Instantiate(enemyList[index].enemy);
                         SetPool(enemy, index);
-                        Debug.Log(enemy.pool != null);
                         return enemy;
                     },
                     OnTakeFromPool,

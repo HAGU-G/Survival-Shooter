@@ -24,6 +24,8 @@ public class EntityBehaviour : MonoBehaviour
     }
 
     public int damage = 20;
+    protected float attackTimer = 0f;
+    public float attackInterval = 0.16f;
 
     public float syncAnimationSpeed = 4.0f;
     public float maxSpeed = 5.0f;
@@ -43,14 +45,14 @@ public class EntityBehaviour : MonoBehaviour
     {
         AffectOnHealth(-damage);
         hitParticles.transform.position = hitPos;
-        hitParticles.transform.rotation *= Quaternion.Euler(hitNormal);
+        hitParticles.transform.rotation = Quaternion.LookRotation(hitNormal);
         hitParticles.Play();
     }
 
     public void AffectOnHealth(int deltaHP)
     {
         currentHp += deltaHP;
-        if (currentHp < 0)
+        if (currentHp <= 0)
         {
             currentHp = 0;
             IsDead = true;

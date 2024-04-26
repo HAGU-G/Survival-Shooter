@@ -12,9 +12,6 @@ public class Player : EntityBehaviour
     private LineRenderer bulletLine;
     public ParticleSystem gunParticles;
 
-    private float attackTimer = 0f;
-    public float attackInterval = 0.16f;
-
     private Vector3 inputVelocity;
 
 

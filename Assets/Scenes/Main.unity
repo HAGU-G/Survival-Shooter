@@ -232,13 +232,13 @@ MonoBehaviour:
   enemyList:
   - enemy: {fileID: 7116214898167428269, guid: a0f4bdee07cc6ab47a3ec0e7980358a6, type: 3}
     weight: 1
-    maxCount: 1
+    maxCount: 3
   - enemy: {fileID: -7700961401548721532, guid: 84ddf620f9ad4f84da0e91994f2dc022, type: 3}
-    weight: 1
-    maxCount: 1
+    weight: 5
+    maxCount: 20
   - enemy: {fileID: -6845707295753289223, guid: 25965e44b32b9a44f9a7ae4e51321aed, type: 3}
-    weight: 1
-    maxCount: 1
+    weight: 5
+    maxCount: 20
   spawnInterval: 0.5
 --- !u!1 &598896059
 GameObject:

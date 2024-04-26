@@ -146,6 +146,7 @@ MonoBehaviour:
   maxHp: 100
   hitParticles: {fileID: 3882443973966584040}
   damage: 20
+  attackInterval: 2
   syncAnimationSpeed: 4
   maxSpeed: 1
   capsuleCollider: {fileID: 1867837229899442110}

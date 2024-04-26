@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
@@ -7,7 +8,7 @@ public class Enemy : EntityBehaviour
     public IObjectPool<Enemy> pool = null;
 
     private Animator animator;
-    private GameObject[] players;
+    private Player target;
     private NavMeshAgent agent;
     public CapsuleCollider capsuleCollider;
 
@@ -18,7 +19,7 @@ public class Enemy : EntityBehaviour
         base.Awake();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        players = GameObject.FindGameObjectsWithTag("Player");
+        target = GameObject.FindWithTag("Player").GetComponent<Player>();
 
         animator.speed = maxSpeed;
 
@@ -33,20 +34,29 @@ public class Enemy : EntityBehaviour
             gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
             foreach (var c in GetComponents<Collider>())
                 c.excludeLayers = 1 << LayerMask.NameToLayer("Player");
+
+            StopCoroutine(CoPathFind());
         };
+
+
     }
 
     private void OnEnable()
     {
-        NavMesh.SamplePosition(Vector3.zero, out NavMeshHit hit, 50f, NavMesh.AllAreas);
-        transform.position = hit.position;
         animator.ResetTrigger("Death");
-        agent.enabled = true;
         IsDead = false;
+
+        agent.enabled = true;
+        NavMesh.SamplePosition(Vector3.zero, out NavMeshHit hit, 50f, NavMesh.AllAreas);
+        
+        transform.position = hit.position;
         currentHp = maxHp;
+
         gameObject.layer = LayerMask.NameToLayer("Default");
         foreach (var c in GetComponents<Collider>())
             c.excludeLayers = 1 << LayerMask.NameToLayer("Nothing");
+
+        StartCoroutine(CoPathFind());
     }
 
     private void Update()
@@ -64,22 +74,43 @@ public class Enemy : EntityBehaviour
         if (IsDead)
             return;
 
-        if (players.Length > 0)
-        {
-            NavMeshPath a = new();
-            agent.SetDestination(players[0].transform.position);
-        }
-        else
-        {
-            players = GameObject.FindGameObjectsWithTag("Player");
-        }
-
         if (agent.velocity.magnitude > 0)
         {
             animator.SetFloat("speed", agent.velocity.magnitude / syncAnimationSpeed);
         }
 
+        attackTimer += Time.deltaTime;
+    }
 
+    private IEnumerator CoPathFind()
+    {
+        while (!IsDead)
+        {
+            if (target != null && !target.IsDead)
+            {
+                agent.SetDestination(target.transform.position);
+            }
+            else
+            {
+                target = GameObject.FindWithTag("Player").GetComponent<Player>();
+            }
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (attackTimer < attackInterval)
+            return;
+
+        attackTimer = 0f;
+
+        var player = other.GetComponent<Player>();
+        if (player == target && !target.IsDead)
+        {
+            player.Damaged(damage, other.ClosestPoint(transform.position), transform.position - other.transform.position);
+            agent.ResetPath();
+        }
     }
 
     public void StartSinking()

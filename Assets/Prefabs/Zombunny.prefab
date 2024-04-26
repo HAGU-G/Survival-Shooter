@@ -144,7 +144,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 100
   hitParticles: {fileID: 4991678189661500826}
-  damage: 20
+  damage: 10
+  attackInterval: 0.5
   syncAnimationSpeed: 4
   maxSpeed: 2
   capsuleCollider: {fileID: 3961044193263895325}
