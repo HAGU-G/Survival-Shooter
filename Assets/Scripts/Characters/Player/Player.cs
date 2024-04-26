@@ -9,19 +9,24 @@ public class Player : EntityBehaviour
     private PlayerInput input;
     private Animator animator;
 
-    private LineRenderer shotEffect;
-    public GameObject gunBarrelEnd;
+    private LineRenderer bulletLine;
+    public ParticleSystem gunParticles;
+
+    private float attackTimer = 0f;
+    public float attackInterval = 0.16f;
 
     private Vector3 inputVelocity;
 
-    private void Awake()
+
+    protected override void Awake()
     {
+        base.Awake();
         rb = GetComponent<Rigidbody>();
         input = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
 
-        shotEffect = GetComponentInChildren<LineRenderer>();
-        shotEffect.enabled = false;
+        bulletLine = GetComponentInChildren<LineRenderer>();
+        bulletLine.enabled = false;
     }
     private void Update()
     {
@@ -37,18 +42,35 @@ public class Player : EntityBehaviour
         if (Physics.Raycast(ray, out RaycastHit hitInfo, float.MaxValue, 1 << LayerMask.NameToLayer("Floor")))
             transform.LookAt(hitInfo.point);
 
-
-        if (input.Attack)
+        attackTimer += Time.deltaTime;
+        if (input.Attack && attackTimer >= attackInterval)
         {
-            shotEffect.enabled = true;
-            Physics.Raycast(new(gunBarrelEnd.transform.position, gunBarrelEnd.transform.forward), out RaycastHit shotHitInfo, float.MaxValue);
-            shotEffect.SetPosition(0,gunBarrelEnd.transform.position);
-            shotEffect.SetPosition(1,shotHitInfo.point);
+            attackTimer = 0f;
+
+            Physics.Raycast(new(gunParticles.transform.position, gunParticles.transform.forward),
+                out RaycastHit shotHitInfo,
+                float.MaxValue,
+                ~(1 << LayerMask.NameToLayer("Ignore Raycast")),
+                QueryTriggerInteraction.Ignore);
+            StartCoroutine(CoShotEffect(shotHitInfo.point));
             var entity = shotHitInfo.collider.GetComponent<EntityBehaviour>();
-            if(entity != null)
+            if (entity != null)
             {
                 entity.Damaged(damage, shotHitInfo.point, shotHitInfo.normal);
             }
         }
+    }
+
+    private IEnumerator CoShotEffect(Vector3 hitPos)
+    {
+        bulletLine.enabled = true;
+        bulletLine.SetPosition(0, gunParticles.transform.position);
+        bulletLine.SetPosition(1, hitPos);
+        gunParticles.Play();
+
+
+        yield return new WaitForSeconds(0.03f);
+
+        bulletLine.enabled = false;
     }
 }
