@@ -29,20 +29,29 @@ public class Enemy : EntityBehaviour
         {
             GameManager.Instance.Score += score;
             animator.SetTrigger("Death");
+
             agent.enabled = false;
+            StopCoroutine(CoPathFind());
+
             gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
             foreach (var c in GetComponents<Collider>())
                 c.excludeLayers = 1 << LayerMask.NameToLayer("Player");
 
-            StopCoroutine(CoPathFind());
+            audioSource.PlayOneShot(audioDeath);
+        };
+
+        OnDamage += () =>
+        {
+            if (!IsDead)
+                audioSource.PlayOneShot(audioHurt);
         };
 
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         animator.ResetTrigger("Death");
-        IsDead = false;
 
         agent.enabled = true;
         NavMesh.SamplePosition(Vector3.zero, out NavMeshHit hit, 50f, NavMesh.AllAreas);

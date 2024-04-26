@@ -1,6 +1,6 @@
+using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Player : EntityBehaviour
@@ -9,12 +9,13 @@ public class Player : EntityBehaviour
     private PlayerInput input;
     private Animator animator;
 
-    private LineRenderer bulletLine;
+    public LineRenderer bulletLine;
     public ParticleSystem gunParticles;
 
-    private Vector3 inputVelocity;
-
     public Slider slider;
+    public AudioClip audioGunShot;
+
+    private Vector3 inputVelocity;
 
     protected override void Awake()
     {
@@ -23,14 +24,24 @@ public class Player : EntityBehaviour
         input = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
 
-        bulletLine = GetComponentInChildren<LineRenderer>();
-        bulletLine.enabled = false;
-
         OnDie += () =>
         {
             animator.SetTrigger("Death");
+            audioSource.PlayOneShot(audioDeath);
+            GameManager.Instance.GameOver();
+        };
+        OnDamage += () =>
+        {
+            if (!IsDead)
+                audioSource.PlayOneShot(audioHurt);
         };
     }
+
+    private void Start()
+    {
+        bulletLine.enabled = false;
+    }
+
     private void Update()
     {
         // TODO 데미지 받을 때마다 갱신되도록 변경
@@ -72,6 +83,8 @@ public class Player : EntityBehaviour
             {
                 entity.Damaged(damage, shotHitInfo.point, shotHitInfo.normal);
             }
+
+            audioSource.PlayOneShot(audioGunShot);
         }
 
 
@@ -92,6 +105,6 @@ public class Player : EntityBehaviour
 
     private void RestartLevel()
     {
-        GameManager.Instance.GameOver();
+        StartCoroutine(GameManager.Instance.CoRestart(5f));
     }
 }

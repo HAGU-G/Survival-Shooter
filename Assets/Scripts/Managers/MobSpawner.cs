@@ -1,8 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using Unity.VisualScripting;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -53,6 +49,9 @@ public class MobSpawner : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.IsGameOver)
+            return;
+
         spawnTimer += Time.deltaTime;
         if (spawnTimer >= spawnInterval)
         {

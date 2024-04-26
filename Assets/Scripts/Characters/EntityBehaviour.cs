@@ -3,8 +3,12 @@ using UnityEngine;
 
 public class EntityBehaviour : MonoBehaviour
 {
-    public int maxHp = 100;
     public ParticleSystem hitParticles;
+    protected AudioSource audioSource;
+    public AudioClip audioDeath;
+    public AudioClip audioHurt;
+
+    public int maxHp = 100;
     protected int currentHp;
     private bool isDead = false;
     public bool IsDead
@@ -13,12 +17,10 @@ public class EntityBehaviour : MonoBehaviour
         {
             return isDead;
         }
-        set
+        private set
         {
             if (!isDead && value && OnDie != null)
-            {
                 OnDie();
-            }
             isDead = value;
         }
     }
@@ -31,19 +33,32 @@ public class EntityBehaviour : MonoBehaviour
     public float maxSpeed = 5.0f;
 
     public event Action OnDie;
+    public event Action OnDamage;
 
 
     protected virtual void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
+
         currentHp = maxHp;
+    }
+
+    protected virtual void OnEnable()
+    {
+        IsDead = false;
     }
 
     public void Damaged(int damage, Vector3 hitPos, Vector3 hitNormal)
     {
         AffectOnHealth(-damage);
-        hitParticles.transform.position = hitPos;
-        hitParticles.transform.rotation = Quaternion.LookRotation(hitNormal);
-        hitParticles.Play();
+        if (hitParticles != null)
+        {
+            hitParticles.transform.position = hitPos;
+            hitParticles.transform.rotation = Quaternion.LookRotation(hitNormal);
+            hitParticles.Play();
+        }
+        if (OnDamage != null)
+            OnDamage();
     }
 
     public void AffectOnHealth(int deltaHP)

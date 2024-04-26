@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,7 +17,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public UIManager ui;
+    public UIManager uiManager;
+    public AudioManager audioManager;
 
     public bool IsPaused { get; private set; }
     public bool IsGameOver { get; private set; }
@@ -30,7 +29,7 @@ public class GameManager : MonoBehaviour
         set
         {
             score = value;
-            ui.score.text = $"score : {score}";
+            uiManager.score.text = $"score : {score}";
         }
     }
 
@@ -62,8 +61,7 @@ public class GameManager : MonoBehaviour
     {
         //TODO 게임오버 연출
         IsGameOver = true;
-        StartCoroutine(CoRestart(5f));
-        
+        uiManager.gameover.enabled = true;
     }
 
     public IEnumerator CoRestart(float time)
@@ -71,6 +69,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(time);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         IsGameOver = false;
+        uiManager.gameover.enabled = false;
     }
 
     public void QuitGame()
@@ -79,13 +78,13 @@ public class GameManager : MonoBehaviour
     }
     public void PauseGame()
     {
-        ui.pausePanel.SetActive(true);
+        uiManager.pausePanel.SetActive(true);
         Time.timeScale = 0f;
         IsPaused = true;
     }
     public void ResumeGame()
     {
-        ui.pausePanel.SetActive(false);
+        uiManager.pausePanel.SetActive(false);
         Time.timeScale = 1f;
         IsPaused = false;
     }

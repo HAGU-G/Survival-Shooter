@@ -1,20 +1,25 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    private readonly string scoreFormat = $"SCORE : {0}";
+    private static readonly string scoreFormat = $"SCORE : {0}";
 
     public TextMeshProUGUI score;
-    public TextMeshProUGUI gameOver;
+    public TextMeshProUGUI gameover;
+
     public GameObject pausePanel;
+
+    public Slider musicVol;
+    public Slider sfxVol;
+    public Toggle soundOn;
 
     private void Start()
     {
         SetScoreText(0);
         pausePanel.SetActive(false);
-        gameOver.enabled = false;
-
+        gameover.enabled = false;
     }
 
     public void SetScoreText(int score)

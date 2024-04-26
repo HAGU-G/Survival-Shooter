@@ -1,6 +1,4 @@
-using UnityEditor.SearchService;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerInput : MonoBehaviour
 {
@@ -9,7 +7,7 @@ public class PlayerInput : MonoBehaviour
     public float Horizontal { get; private set; }
     public bool Attack { get; private set; }
 
-    private readonly string[] Axises =
+    private static readonly string[] Axises =
     {
         "Vertical",
         "Horizontal",
