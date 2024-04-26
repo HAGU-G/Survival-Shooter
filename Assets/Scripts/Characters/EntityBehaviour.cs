@@ -33,9 +33,6 @@ public class EntityBehaviour : MonoBehaviour
     public event Action OnDie;
 
 
-
-
-
     protected virtual void Awake()
     {
         currentHp = maxHp;

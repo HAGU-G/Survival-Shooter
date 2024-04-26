@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,9 +25,16 @@ public class Player : EntityBehaviour
 
         bulletLine = GetComponentInChildren<LineRenderer>();
         bulletLine.enabled = false;
+
+        OnDie += () =>
+        {
+            animator.SetTrigger("Death");
+        };
     }
     private void Update()
     {
+        if(IsDead)
+            return;
         //¿Ãµø
         inputVelocity = Vector3.forward * input.Vertical * maxSpeed
             + Vector3.right * input.Horizontal * maxSpeed;

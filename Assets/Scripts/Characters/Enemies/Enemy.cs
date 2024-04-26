@@ -23,10 +23,6 @@ public class Enemy : EntityBehaviour
 
         animator.speed = maxSpeed;
 
-    }
-
-    private void Start()
-    {
         OnDie += () =>
         {
             animator.SetTrigger("Death");
@@ -38,7 +34,6 @@ public class Enemy : EntityBehaviour
             StopCoroutine(CoPathFind());
         };
 
-
     }
 
     private void OnEnable()
@@ -48,7 +43,7 @@ public class Enemy : EntityBehaviour
 
         agent.enabled = true;
         NavMesh.SamplePosition(Vector3.zero, out NavMeshHit hit, 50f, NavMesh.AllAreas);
-        
+
         transform.position = hit.position;
         currentHp = maxHp;
 
@@ -100,16 +95,17 @@ public class Enemy : EntityBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (attackTimer < attackInterval)
-            return;
-
-        attackTimer = 0f;
-
         var player = other.GetComponent<Player>();
         if (player == target && !target.IsDead)
         {
-            player.Damaged(damage, other.ClosestPoint(transform.position), transform.position - other.transform.position);
             agent.ResetPath();
+
+            if (attackTimer >= attackInterval)
+            {
+                player.Damaged(damage, other.ClosestPoint(transform.position), transform.position - other.transform.position);
+                attackTimer = 0f;
+            }
+
         }
     }
 
