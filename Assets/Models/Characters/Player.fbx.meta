@@ -863,7 +863,7 @@ ModelImporter:
       - time: 0.9977629
         functionName: RestartLevel
         data: 
-        objectReferenceParameter: {fileID: 11500000, guid: db5c01dce151d3d44a49253bda030655, type: 3}
+        objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0

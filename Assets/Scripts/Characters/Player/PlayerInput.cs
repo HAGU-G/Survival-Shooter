@@ -1,4 +1,6 @@
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerInput : MonoBehaviour
 {
@@ -18,6 +20,9 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.IsPaused)
+            return;
+
         Vertical = Input.GetAxis(Axises[0]);
         Horizontal = Input.GetAxis(Axises[1]);
         Attack = Input.GetButton(Axises[2]);

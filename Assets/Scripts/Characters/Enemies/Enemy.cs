@@ -14,6 +14,8 @@ public class Enemy : EntityBehaviour
 
     private bool isSinking;
 
+    public int score = 10;
+
     protected override void Awake()
     {
         base.Awake();
@@ -25,6 +27,7 @@ public class Enemy : EntityBehaviour
 
         OnDie += () =>
         {
+            GameManager.Instance.Score += score;
             animator.SetTrigger("Death");
             agent.enabled = false;
             gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");

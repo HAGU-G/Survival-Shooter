@@ -1,8 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player : EntityBehaviour
 {
@@ -15,6 +14,7 @@ public class Player : EntityBehaviour
 
     private Vector3 inputVelocity;
 
+    public Slider slider;
 
     protected override void Awake()
     {
@@ -33,8 +33,12 @@ public class Player : EntityBehaviour
     }
     private void Update()
     {
-        if(IsDead)
+        // TODO 데미지 받을 때마다 갱신되도록 변경
+        slider.value = (float)currentHp / maxHp;
+
+        if (IsDead)
             return;
+
         //이동
         inputVelocity = Vector3.forward * input.Vertical * maxSpeed
             + Vector3.right * input.Horizontal * maxSpeed;
@@ -43,10 +47,15 @@ public class Player : EntityBehaviour
         rb.velocity = inputVelocity + Vector3.up * rb.velocity.y;
         animator.SetFloat("speed", ((input.Vertical != 0f) ? input.Vertical : input.Horizontal) * maxSpeed / syncAnimationSpeed);
 
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, float.MaxValue, 1 << LayerMask.NameToLayer("Floor")))
-            transform.LookAt(hitInfo.point);
+        //회전
+        if (!GameManager.Instance.IsPaused)
+        {
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, float.MaxValue, 1 << LayerMask.NameToLayer("Floor")))
+                transform.LookAt(hitInfo.point);
+        }
 
+        //공격
         attackTimer += Time.deltaTime;
         if (input.Attack && attackTimer >= attackInterval)
         {
@@ -64,6 +73,8 @@ public class Player : EntityBehaviour
                 entity.Damaged(damage, shotHitInfo.point, shotHitInfo.normal);
             }
         }
+
+
     }
 
     private IEnumerator CoShotEffect(Vector3 hitPos)
@@ -77,5 +88,10 @@ public class Player : EntityBehaviour
         yield return new WaitForSeconds(0.03f);
 
         bulletLine.enabled = false;
+    }
+
+    private void RestartLevel()
+    {
+        GameManager.Instance.GameOver();
     }
 }
