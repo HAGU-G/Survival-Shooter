@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hellephant
       objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: b77f122f451a2394898a24191c26107c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: b77f122f451a2394898a24191c26107c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -147,6 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitParticles: {fileID: 3882443973966584040}
+  audioSource: {fileID: -537559117453789301}
   audioDeath: {fileID: 8300000, guid: 8c615fd0429f34edf85539d70279360d, type: 3}
   audioHurt: {fileID: 8300000, guid: fce027b40770a44298a6f5a4233bfb04, type: 3}
   maxHp: 30

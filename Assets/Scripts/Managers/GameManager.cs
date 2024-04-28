@@ -48,12 +48,6 @@ public class GameManager : MonoBehaviour
                 ResumeGame();
         }
 
-
-        if (IsGameOver)
-        {
-            //TODO 게임오버 연출
-        }
-
     }
 
     public void Gameover()

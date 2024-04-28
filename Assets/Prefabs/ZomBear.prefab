@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100074, guid: c236aa7ad6dcabe47abc7d2cf903ae71, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 100074, guid: c236aa7ad6dcabe47abc7d2cf903ae71, type: 3}
       propertyPath: m_IsActive
@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitParticles: {fileID: 5468786661792202479}
+  audioSource: {fileID: 6514082025320615712}
   audioDeath: {fileID: 8300000, guid: 62366b8d2c37a49dca550841c741317f, type: 3}
   audioHurt: {fileID: 8300000, guid: 1d4840678e677424b8921716c72397ea, type: 3}
   maxHp: 3

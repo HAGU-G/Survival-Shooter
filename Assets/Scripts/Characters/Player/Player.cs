@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,10 +11,36 @@ public class Player : EntityBehaviour
 
     public LineRenderer bulletLine;
     public ParticleSystem gunParticles;
+    public CinemachineVirtualCamera vCamera; 
 
-    public Slider slider;
+    public Slider hpSlider;
+    public Slider skillSlider;
+    public AudioSource audioAttack;
+    public Image skillSliderImage;
+    public GameObject attackSphere;
+
+    private int skillPoint;
+    public int maxSkillPoint = 10;
+    private int SkillPoint
+    {
+        get => skillPoint;
+        set
+        {
+            skillPoint = Mathf.Clamp(skillPoint = value, 0, maxSkillPoint);
+            skillSlider.value = skillPoint;
+            if (skillPoint == maxSkillPoint)
+                skillSliderImage.color = Color.red;
+            else
+                skillSliderImage.color = Color.gray;
+          }
+    }
+
     public AudioClip audioGunShot;
+    public AudioClip countDown;
+    public AudioClip countDownLast;
+    public AudioClip countDone;
     public Light shotLight;
+
 
     public Animator hitEffect;
 
@@ -39,12 +66,14 @@ public class Player : EntityBehaviour
             {
                 audioSource.PlayOneShot(audioHurt);
                 hitEffect.SetTrigger("Hit");
+                SkillPoint++;
             }
         };
     }
 
     private void Start()
     {
+        attackSphere.SetActive(false);
         bulletLine.enabled = false;
         shotLight.enabled = false;
     }
@@ -52,7 +81,7 @@ public class Player : EntityBehaviour
     private void Update()
     {
         // TODO 데미지 받을 때마다 갱신되도록 변경
-        slider.value = (float)currentHp / maxHp;
+        hpSlider.value = (float)currentHp / maxHp;
 
         if (IsDead)
             return;
@@ -89,12 +118,16 @@ public class Player : EntityBehaviour
                 var entity = shotHitInfo.collider.GetComponent<EntityBehaviour>();
                 if (entity != null)
                 {
-                    entity.Damaged(damage, shotHitInfo.point, shotHitInfo.normal);
+                    if (entity.Damaged(damage, shotHitInfo.point, shotHitInfo.normal))
+                        SkillPoint++;
                 }
-                audioSource.PlayOneShot(audioGunShot);
+                audioAttack.PlayOneShot(audioGunShot);
             }
         }
 
+        //스킬
+        if (input.Skill && SkillPoint == maxSkillPoint && !attackSphere.activeSelf)
+            StartCoroutine(UseSkill());
 
     }
 
@@ -116,5 +149,27 @@ public class Player : EntityBehaviour
     private void RestartLevel()
     {
         GameManager.Instance.Restart();
+    }
+
+    private IEnumerator UseSkill()
+    {
+        SkillPoint = 0;
+        audioAttack.PlayOneShot(countDown);
+        vCamera.m_Lens.FieldOfView = 70;
+
+        yield return new WaitForSeconds(1f);
+        audioAttack.PlayOneShot(countDown);
+        vCamera.m_Lens.FieldOfView = 85;
+        attackSphere.SetActive(true);
+
+        yield return new WaitForSeconds(1f);
+        audioAttack.PlayOneShot(countDownLast);
+        vCamera.m_Lens.FieldOfView = 100;
+
+
+        yield return new WaitForSeconds(1f);
+        audioAttack.PlayOneShot(countDone);
+        vCamera.m_Lens.FieldOfView = 60;
+        attackSphere.SetActive(false);
     }
 }

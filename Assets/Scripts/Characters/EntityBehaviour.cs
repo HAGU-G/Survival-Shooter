@@ -4,7 +4,7 @@ using UnityEngine;
 public class EntityBehaviour : MonoBehaviour
 {
     public ParticleSystem hitParticles;
-    protected AudioSource audioSource;
+    public AudioSource audioSource;
     public AudioClip audioDeath;
     public AudioClip audioHurt;
 
@@ -38,8 +38,6 @@ public class EntityBehaviour : MonoBehaviour
 
     protected virtual void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
-
         currentHp = maxHp;
     }
 
@@ -48,7 +46,7 @@ public class EntityBehaviour : MonoBehaviour
         IsDead = false;
     }
 
-    public void Damaged(int damage, Vector3 hitPos, Vector3 hitNormal)
+    public bool Damaged(int damage, Vector3 hitPos, Vector3 hitNormal)
     {
         AffectOnHealth(-damage);
         if (hitParticles != null)
@@ -59,6 +57,7 @@ public class EntityBehaviour : MonoBehaviour
         }
         if (OnDamage != null)
             OnDamage();
+        return IsDead;
     }
 
     public void AffectOnHealth(int deltaHP)
