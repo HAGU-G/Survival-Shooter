@@ -25,7 +25,7 @@ public class PlayerInput : MonoBehaviour
         Horizontal = Input.GetAxis(Axises[1]);
         Attack = Input.GetButton(Axises[2]);
 
-        if(OnMove != null && Vertical + Horizontal > 0)
+        if (OnMove != null && Vertical + Horizontal > 0)
         {
             OnMove();
         }

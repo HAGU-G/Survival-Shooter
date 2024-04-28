@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -80,19 +79,20 @@ public class Player : EntityBehaviour
         {
             attackTimer = 0f;
 
-            Physics.Raycast(new(gunParticles.transform.position, gunParticles.transform.forward),
+            if (Physics.Raycast(new(gunParticles.transform.position, gunParticles.transform.forward),
                 out RaycastHit shotHitInfo,
                 float.MaxValue,
                 ~(1 << LayerMask.NameToLayer("Ignore Raycast")),
-                QueryTriggerInteraction.Ignore);
-            StartCoroutine(CoShotEffect(shotHitInfo.point));
-            var entity = shotHitInfo.collider.GetComponent<EntityBehaviour>();
-            if (entity != null)
+                QueryTriggerInteraction.Ignore))
             {
-                entity.Damaged(damage, shotHitInfo.point, shotHitInfo.normal);
+                StartCoroutine(CoShotEffect(shotHitInfo.point));
+                var entity = shotHitInfo.collider.GetComponent<EntityBehaviour>();
+                if (entity != null)
+                {
+                    entity.Damaged(damage, shotHitInfo.point, shotHitInfo.normal);
+                }
+                audioSource.PlayOneShot(audioGunShot);
             }
-
-            audioSource.PlayOneShot(audioGunShot);
         }
 
 

@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -50,7 +49,7 @@ public class GameManager : MonoBehaviour
         }
 
 
-        if(IsGameOver)
+        if (IsGameOver)
         {
             //TODO 게임오버 연출
         }
