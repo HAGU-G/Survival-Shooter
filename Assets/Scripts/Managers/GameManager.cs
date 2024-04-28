@@ -57,19 +57,18 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void GameOver()
+    public void Gameover()
     {
         //TODO 게임오버 연출
         IsGameOver = true;
-        uiManager.gameover.enabled = true;
+        uiManager.gameover.SetActive(true);
     }
 
-    public IEnumerator CoRestart(float time)
+    public void Restart()
     {
-        yield return new WaitForSeconds(time);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         IsGameOver = false;
-        uiManager.gameover.enabled = false;
+        uiManager.gameover.SetActive(false);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void QuitGame()

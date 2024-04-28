@@ -54,9 +54,6 @@ public class Enemy : EntityBehaviour
         animator.ResetTrigger("Death");
 
         agent.enabled = true;
-        NavMesh.SamplePosition(Vector3.zero, out NavMeshHit hit, 50f, NavMesh.AllAreas);
-
-        transform.position = hit.position;
         currentHp = maxHp;
 
         gameObject.layer = LayerMask.NameToLayer("Default");

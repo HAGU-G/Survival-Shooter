@@ -17,6 +17,7 @@ public class MobSpawner : MonoBehaviour
     public EnemyInfo[] enemyList;
     private List<int> spawnTable = new();
 
+    public Transform[] spawnPoints;
     private float spawnTimer;
     public float spawnInterval = 1f;
 
@@ -55,10 +56,12 @@ public class MobSpawner : MonoBehaviour
         spawnTimer += Time.deltaTime;
         if (spawnTimer >= spawnInterval)
         {
-            spawnTimer = 0f;
             int poolIndex = spawnTable[Random.Range(0, spawnTable.Count)];
             if (objectPools[poolIndex].CountActive < enemyList[poolIndex].maxCount)
+            {
                 objectPools[poolIndex].Get();
+                spawnTimer = 0f;
+            }
         }
     }
 
@@ -70,6 +73,8 @@ public class MobSpawner : MonoBehaviour
     private void OnTakeFromPool(Enemy enemy)
     {
         enemy.gameObject.SetActive(true);
+        int spawnPointIndex = Random.Range(0, spawnPoints.Length);
+        enemy.transform.SetPositionAndRotation(spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
     }
 
     private void OnReturnToPool(Enemy enemy)

@@ -7,7 +7,7 @@ public class UIManager : MonoBehaviour
     private static readonly string scoreFormat = $"SCORE : {0}";
 
     public TextMeshProUGUI score;
-    public TextMeshProUGUI gameover;
+    public GameObject gameover;
 
     public GameObject pausePanel;
 
@@ -19,7 +19,7 @@ public class UIManager : MonoBehaviour
     {
         SetScoreText(0);
         pausePanel.SetActive(false);
-        gameover.enabled = false;
+        gameover.SetActive(false);
     }
 
     public void SetScoreText(int score)

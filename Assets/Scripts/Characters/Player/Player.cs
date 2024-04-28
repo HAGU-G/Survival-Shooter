@@ -14,6 +14,9 @@ public class Player : EntityBehaviour
 
     public Slider slider;
     public AudioClip audioGunShot;
+    public Light shotLight;
+
+    public Animator hitEffect;
 
     private Vector3 inputVelocity;
 
@@ -28,18 +31,23 @@ public class Player : EntityBehaviour
         {
             animator.SetTrigger("Death");
             audioSource.PlayOneShot(audioDeath);
-            GameManager.Instance.GameOver();
+            GameManager.Instance.Gameover();
+            hitEffect.SetTrigger("Gameover");
         };
         OnDamage += () =>
         {
             if (!IsDead)
+            {
                 audioSource.PlayOneShot(audioHurt);
+                hitEffect.SetTrigger("Hit");
+            }
         };
     }
 
     private void Start()
     {
         bulletLine.enabled = false;
+        shotLight.enabled = false;
     }
 
     private void Update()
@@ -93,6 +101,7 @@ public class Player : EntityBehaviour
     private IEnumerator CoShotEffect(Vector3 hitPos)
     {
         bulletLine.enabled = true;
+        shotLight.enabled = true;
         bulletLine.SetPosition(0, gunParticles.transform.position);
         bulletLine.SetPosition(1, hitPos);
         gunParticles.Play();
@@ -101,10 +110,11 @@ public class Player : EntityBehaviour
         yield return new WaitForSeconds(0.03f);
 
         bulletLine.enabled = false;
+        shotLight.enabled = false;
     }
 
     private void RestartLevel()
     {
-        StartCoroutine(GameManager.Instance.CoRestart(5f));
+        GameManager.Instance.Restart();
     }
 }
