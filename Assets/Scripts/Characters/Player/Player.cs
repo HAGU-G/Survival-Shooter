@@ -11,7 +11,7 @@ public class Player : EntityBehaviour
 
     public LineRenderer bulletLine;
     public ParticleSystem gunParticles;
-    public CinemachineVirtualCamera vCamera; 
+    public CinemachineVirtualCamera vCamera;
 
     public Slider hpSlider;
     public Slider skillSlider;
@@ -32,7 +32,7 @@ public class Player : EntityBehaviour
                 skillSliderImage.color = Color.red;
             else
                 skillSliderImage.color = Color.gray;
-          }
+        }
     }
 
     public AudioClip audioGunShot;
